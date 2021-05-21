@@ -3,33 +3,7 @@ import { ThemeProvider } from '@emotion/react'
 import styled from '@emotion/styled'
 import AccountUsers from './AccountUsers/AccountUsers'
 import Globals from './ui/Globals'
-
-const theme = {
-  colors: {
-    primaryBackground: '#EDF2F7',
-    border: '#e2e8f0',
-    primaryText: '#1A202C',
-    secondaryText: '#A0AEC0',
-    primary: '#475DE5',
-    secondary: '#fff',
-  },
-  spacing: {
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-  },
-  fontSize: {
-    sm: 12,
-    md: 14,
-    lg: 16,
-    xl: 18,
-  },
-  borderRadius: {
-    sm: 4,
-    md: 8,
-  },
-}
+import theme from './ui/theme'
 
 function App() {
   return (
@@ -43,7 +17,7 @@ function App() {
 }
 
 const Root = styled.main`
-  background-color: ${({ theme }) => theme.colors.primaryBackground};
+  background-color: ${({ theme }) => theme.colors.gray20};
   display: flex;
   justify-content: center;
 `

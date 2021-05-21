@@ -5,7 +5,7 @@ export default function Globals() {
   return (
     <Global
       styles={css`
-        body {
+        html {
           font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu;
         }
         html,
@@ -93,7 +93,6 @@ export default function Globals() {
           padding: 0;
           border: 0;
           font-size: 100%;
-          font: inherit;
           vertical-align: baseline;
         }
         /* HTML5 display-role reset for older browsers */
