@@ -11,6 +11,35 @@ import DeleteButton from '../ui/form/DeleteButton'
 import User from './User'
 
 export default function AccountUsers() {
+  const [selectedIds, setSelectedIds] = React.useState<{ [key: number]: boolean }>({})
+
+  const onChangeSelected = (id: number, selected: boolean) => {
+    if (!selected) {
+      const copy = { ...selectedIds }
+      delete copy[id]
+      setSelectedIds(copy)
+    } else {
+      setSelectedIds({
+        ...selectedIds,
+        [id]: selected,
+      })
+    }
+  }
+
+  const selectedCount = Object.keys(selectedIds).length
+
+  const onToggleSelectAll = () => {
+    if (selectedCount < data.users.length) {
+      const allSelectedIds = data.users.reduce<{ [key: number]: boolean }>((acc, user) => {
+        acc[user.id] = true
+        return acc
+      }, {})
+      setSelectedIds(allSelectedIds)
+    } else {
+      setSelectedIds({})
+    }
+  }
+
   return (
     <Root>
       <Header>
@@ -22,19 +51,26 @@ export default function AccountUsers() {
       </Header>
       <ListContainer>
         <Toolbar>
-          <ToolbarText>2 users selected</ToolbarText>
+          <ToolbarText>
+            {selectedCount} user{selectedCount !== 1 ? 's' : ''} selected
+          </ToolbarText>
           <EditButton />
           <DeleteButton />
         </Toolbar>
         <ListHeader>
-          <Checkbox />
+          <Checkbox onClick={onToggleSelectAll} />
           <div />
           <UserColumn>User</UserColumn>
           <div />
           <PermissionColumn>Permission</PermissionColumn>
         </ListHeader>
         {data.users.slice(0, 50).map((user, i) => (
-          <User key={i} user={user} />
+          <User
+            key={i}
+            user={user}
+            selected={selectedIds[user.id] || false}
+            onChangeSelected={selected => onChangeSelected(user.id, selected)}
+          />
         ))}
       </ListContainer>
     </Root>

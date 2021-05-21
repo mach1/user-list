@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 
 import { smallText } from '../ui/text'
@@ -8,6 +9,8 @@ import DeleteButton from '../ui/form/DeleteButton'
 import Role from './Role'
 
 interface Props {
+  onChangeSelected: (selected: boolean) => void
+  selected: boolean
   user: {
     id: number
     name: string
@@ -16,13 +19,13 @@ interface Props {
     role: string
   }
 }
-export default function User({ user }: Props) {
+export default function User({ user, selected, onChangeSelected }: Props) {
   return (
-    <Root>
+    <Root selected={selected}>
       <ColorStripe />
-      <Checkbox />
+      <Checkbox checked={selected} onClick={() => onChangeSelected(!selected)} />
       <div />
-      <Avatar src={user.avatar} />
+      <Avatar src={user.avatar} alt='user avatar' />
       <div />
       <Details>
         <UserName>{user.name}</UserName>
@@ -39,7 +42,7 @@ export default function User({ user }: Props) {
   )
 }
 
-const Root = styled.div`
+const Root = styled.div<{ selected: boolean }>`
   display: grid;
   position: relative;
   grid-template-columns: 16px 12px 32px 12px 2fr 24px 1fr 12px 106px;
@@ -53,7 +56,6 @@ const Root = styled.div`
 
   :hover {
     background-color: ${({ theme }) => theme.colors.gray10};
-
     & > div:first-of-type {
       display: block;
     }
@@ -62,6 +64,15 @@ const Root = styled.div`
       display: flex;
     }
   }
+
+  ${({ selected, theme }) =>
+    selected &&
+    css`
+      background-color: ${theme.colors.gray10};
+      & > div:first-of-type {
+        display: block;
+      }
+    `}
 `
 
 const Avatar = styled.img`

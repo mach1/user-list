@@ -2,8 +2,8 @@ import * as React from 'react'
 import styled from '@emotion/styled'
 import check from './check.svg'
 
-export default function Checkbox() {
-  return <CheckboxInput type='checkbox' />
+export default function Checkbox(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return <CheckboxInput {...props} type='checkbox' />
 }
 
 const CheckboxInput = styled.input`

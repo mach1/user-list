@@ -63,6 +63,7 @@ export const ActionButton = styled(SecondaryButton)`
   align-items: center;
   height: 32px;
   padding: 0 ${({ theme }) => theme.spacing.sm}px;
+  box-shadow: 0px 1px 2px 0px rgba(45, 55, 72, 0.08);
 `
 
 export const ActionButtonText = styled.span`
