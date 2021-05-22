@@ -1,7 +1,10 @@
 import * as React from 'react'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import data from '../users.json'
+import { useQuery } from '@apollo/client'
+
+import { GET_USERS } from '../operations/queries/getUsers'
+import type { GetUsers } from '../operations/queries/__generated__/GetUsers'
 
 import { SectionTitle, PrimaryButton, ListTitle, ColumnTitle } from '../ui/components'
 import SearchInput from '../ui/form/SearchInput'
@@ -11,9 +14,10 @@ import DeleteButton from '../ui/form/DeleteButton'
 import User from './User'
 
 export default function AccountUsers() {
-  const [selectedIds, setSelectedIds] = React.useState<{ [key: number]: boolean }>({})
+  const [selectedIds, setSelectedIds] = React.useState<{ [key: string]: boolean }>({})
+  const { data } = useQuery<GetUsers>(GET_USERS)
 
-  const onChangeSelected = (id: number, selected: boolean) => {
+  const onChangeSelected = (id: string, selected: boolean) => {
     if (!selected) {
       const copy = { ...selectedIds }
       delete copy[id]
@@ -29,8 +33,10 @@ export default function AccountUsers() {
   const selectedCount = Object.keys(selectedIds).length
 
   const onToggleSelectAll = () => {
-    if (selectedCount < data.users.length) {
-      const allSelectedIds = data.users.reduce<{ [key: number]: boolean }>((acc, user) => {
+    if (!data) return
+
+    if (selectedCount < data?.getUsers.length) {
+      const allSelectedIds = data.getUsers.reduce<{ [key: string]: boolean }>((acc, user) => {
         acc[user.id] = true
         return acc
       }, {})
@@ -39,6 +45,8 @@ export default function AccountUsers() {
       setSelectedIds({})
     }
   }
+
+  if (!data) return null
 
   return (
     <Root>
@@ -64,7 +72,7 @@ export default function AccountUsers() {
           <div />
           <PermissionColumn>Permission</PermissionColumn>
         </ListHeader>
-        {data.users.slice(0, 50).map((user, i) => (
+        {data.getUsers.map((user, i) => (
           <User
             key={i}
             user={user}

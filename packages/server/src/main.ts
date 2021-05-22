@@ -18,13 +18,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    getUsers: [User]!
+    getUsers: [User!]!
   }
 `
 
 const resolvers = {
   Query: {
-    getUsers: () => userData.users
+    getUsers: () => userData.users.slice(0, 50)
   }
 }
 

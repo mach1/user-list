@@ -6,11 +6,16 @@
     "build": "snowpack build",
     "test": "web-test-runner \"src/**/*.test.tsx\"",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\""
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
+    "download-graphql-schema": "npx apollo service:download --endpoint=http://localhost:4000 graphql-schema.json",
+    "generate-graphql-types": "npx apollo codegen:generate --localSchemaFile=graphql-schema.json --target=typescript --tagName=gql --globalTypesFile=src/operations/queries/__generated__/globalTypes.ts",
+    "gen-types": "yarn download-graphql-schema && yarn generate-graphql-types"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.19",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "graphql": "^15.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

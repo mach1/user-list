@@ -7,18 +7,14 @@ import Checkbox from '../ui/form/Checkbox'
 import EditButton from '../ui/form/EditButton'
 import DeleteButton from '../ui/form/DeleteButton'
 import Role from './Role'
+import type { GetUsers_getUsers as User } from '../operations/queries/__generated__/GetUsers'
 
 interface Props {
   onChangeSelected: (selected: boolean) => void
   selected: boolean
-  user: {
-    id: number
-    name: string
-    email: string
-    avatar: string
-    role: string
-  }
+  user: User
 }
+
 export default function User({ user, selected, onChangeSelected }: Props) {
   return (
     <Root selected={selected}>
