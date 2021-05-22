@@ -5,7 +5,8 @@
   "author": "Jaan Lambert <jaan.lambert@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev-client": "yarn workspace @user-list/client start"
+    "dev-client": "yarn workspace @user-list/client start",
+    "dev-server": "yarn workspace @user-list/server dev"
   },
   "private": true,
   "workspaces": {
