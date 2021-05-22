@@ -5,13 +5,17 @@
   "author": "Jaan Lambert <jaan.lambert@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev-client": "yarn workspace @user-list/client start",
-    "dev-server": "yarn workspace @user-list/server dev"
+    "dev-client": "yarn workspace @user-list/client dev",
+    "dev-server": "yarn workspace @user-list/server dev",
+    "dev": "concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-server\" \"npm run dev-client\""
   },
   "private": true,
   "workspaces": {
     "packages": [
       "packages/*"
     ]
+  },
+  "dependencies": {
+    "concurrently": "^6.1.0"
   }
 }
