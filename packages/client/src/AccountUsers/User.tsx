@@ -7,7 +7,7 @@ import Checkbox from '../ui/form/Checkbox'
 import EditButton from '../ui/form/EditButton'
 import DeleteButton from '../ui/form/DeleteButton'
 import Role from './Role'
-import type { GetUsers_getUsers as User } from '../operations/queries/__generated__/GetUsers'
+import type { GetUsers_users as User } from '../operations/queries/__generated__/GetUsers'
 
 interface Props {
   onChangeSelected: (selected: boolean) => void
@@ -19,7 +19,7 @@ export default function User({ user, selected, onChangeSelected }: Props) {
   return (
     <Root selected={selected}>
       <ColorStripe />
-      <Checkbox checked={selected} onClick={() => onChangeSelected(!selected)} />
+      <Checkbox checked={selected} onChange={() => onChangeSelected(!selected)} />
       <div />
       <Avatar src={user.avatar} alt='user avatar' />
       <div />

@@ -16,6 +16,7 @@ import User from './User'
 export default function AccountUsers() {
   const [selectedIds, setSelectedIds] = React.useState<{ [key: string]: boolean }>({})
   const { data } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, { variables: { filter: '' } })
+  const [allSelected, setAllSelected] = React.useState(false)
 
   const onChangeSelected = (id: GetUsers_users['id'], selected: boolean) => {
     if (!selected) {
@@ -32,10 +33,10 @@ export default function AccountUsers() {
 
   const selectedCount = Object.keys(selectedIds).length
 
-  const onToggleSelectAll = () => {
+  const onToggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!data) return
 
-    if (selectedCount < data?.users.length) {
+    if (e.target.checked) {
       const allSelectedIds = data.users.reduce<{ [key: string]: boolean }>((acc, user) => {
         acc[user.id] = true
         return acc
@@ -44,6 +45,7 @@ export default function AccountUsers() {
     } else {
       setSelectedIds({})
     }
+    setAllSelected(!allSelected)
   }
 
   if (!data) return null
@@ -66,7 +68,7 @@ export default function AccountUsers() {
           <DeleteButton />
         </Toolbar>
         <ListHeader>
-          <Checkbox onClick={onToggleSelectAll} />
+          <Checkbox checked={allSelected} onChange={onToggleSelectAll} />
           <div />
           <UserColumn>User</UserColumn>
           <div />
