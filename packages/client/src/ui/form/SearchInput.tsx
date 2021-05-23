@@ -4,14 +4,11 @@ import styled from '@emotion/styled'
 import { Input } from '../components'
 import Search from '../icons/Search'
 
-interface Props {
+type Props = {
   className?: string
-  inputProps: {
-    placeholder: string
-  }
-}
+} & React.InputHTMLAttributes<HTMLInputElement>
 
-export default function SearchInput({ className, inputProps }: Props) {
+export default function SearchInput({ className, ...inputProps }: Props) {
   return (
     <Root className={className}>
       <EnhancedSearch />

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { useQuery } from '@apollo/client'
+import { debounce } from 'lodash'
 
 import { GET_USERS } from '../operations/queries/getUsers'
 import type { GetUsers, GetUsersVariables, GetUsers_users } from '../operations/queries/__generated__/GetUsers'
@@ -14,8 +15,9 @@ import DeleteButton from '../ui/form/DeleteButton'
 import User from './User'
 
 export default function AccountUsers() {
+  const [filter, setFilter] = React.useState('')
   const [selectedIds, setSelectedIds] = React.useState<{ [key: string]: boolean }>({})
-  const { data } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, { variables: { filter: '' } })
+  const { data } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, { variables: { filter } })
   const [allSelected, setAllSelected] = React.useState(false)
 
   const onChangeSelected = (id: GetUsers_users['id'], selected: boolean) => {
@@ -48,14 +50,16 @@ export default function AccountUsers() {
     setAllSelected(!allSelected)
   }
 
-  if (!data) return null
+  const handleFilterChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value)
+  }, 300)
 
   return (
     <Root>
       <Header>
         <SectionTitle>Account users</SectionTitle>
         <RightContent>
-          <EnhancedSearchInput inputProps={{ placeholder: 'Search' }} />
+          <EnhancedSearchInput placeholder='Search' onChange={handleFilterChange} />
           <PrimaryButton>Connect users</PrimaryButton>
         </RightContent>
       </Header>
@@ -74,14 +78,15 @@ export default function AccountUsers() {
           <div />
           <PermissionColumn>Permission</PermissionColumn>
         </ListHeader>
-        {data.users.map((user, i) => (
-          <User
-            key={i}
-            user={user}
-            selected={selectedIds[user.id] || false}
-            onChangeSelected={selected => onChangeSelected(user.id, selected)}
-          />
-        ))}
+        {data &&
+          data.users.map((user, i) => (
+            <User
+              key={i}
+              user={user}
+              selected={selectedIds[user.id] || false}
+              onChangeSelected={selected => onChangeSelected(user.id, selected)}
+            />
+          ))}
       </ListContainer>
     </Root>
   )

@@ -29,6 +29,7 @@ const Root = styled.main`
   background-color: ${({ theme }) => theme.colors.gray20};
   display: flex;
   justify-content: center;
+  min-height: 100vh;
 `
 
 export default App
