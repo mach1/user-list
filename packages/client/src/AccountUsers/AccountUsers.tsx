@@ -5,7 +5,11 @@ import { useQuery } from '@apollo/client'
 import { debounce } from 'lodash'
 
 import { GET_USERS } from '../operations/queries/getUsers'
-import type { GetUsers, GetUsersVariables, GetUsers_users } from '../operations/queries/__generated__/GetUsers'
+import type {
+  GetUsers,
+  GetUsersVariables,
+  GetUsers_users as UserType,
+} from '../operations/queries/__generated__/GetUsers'
 
 import { SectionTitle, PrimaryButton, ListTitle, ColumnTitle } from '../ui/components'
 import SearchInput from '../ui/form/SearchInput'
@@ -14,13 +18,21 @@ import EditButton from '../ui/form/EditButton'
 import DeleteButton from '../ui/form/DeleteButton'
 import User from './User'
 
+const PAGE_SIZE = 50
+
 export default function AccountUsers() {
   const [filter, setFilter] = React.useState('')
+  const [finished, setFinished] = React.useState(false)
   const [selectedIds, setSelectedIds] = React.useState<{ [key: string]: boolean }>({})
-  const { data } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, { variables: { filter } })
+  const { data, loading, fetchMore } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, {
+    variables: { filter, offset: 0, limit: PAGE_SIZE },
+    notifyOnNetworkStatusChange: true,
+  })
   const [allSelected, setAllSelected] = React.useState(false)
 
-  const onChangeSelected = (id: GetUsers_users['id'], selected: boolean) => {
+  const users = data?.users || []
+
+  const onChangeSelected = (id: UserType['id'], selected: boolean) => {
     if (!selected) {
       const copy = { ...selectedIds }
       delete copy[id]
@@ -39,7 +51,7 @@ export default function AccountUsers() {
     if (!data) return
 
     if (e.target.checked) {
-      const allSelectedIds = data.users.reduce<{ [key: string]: boolean }>((acc, user) => {
+      const allSelectedIds = users.reduce<{ [key: string]: boolean }>((acc, user) => {
         acc[user.id] = true
         return acc
       }, {})
@@ -50,8 +62,38 @@ export default function AccountUsers() {
     setAllSelected(!allSelected)
   }
 
+  const observer = React.useRef<IntersectionObserver | null>(null)
+
+  const lastUserElementRef = React.useCallback(
+    node => {
+      if (loading) return
+      if (observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && !finished) {
+          fetchMore({
+            variables: { filter, offset: users.length, limit: PAGE_SIZE },
+            updateQuery: (prev, { fetchMoreResult }) => {
+              if (!fetchMoreResult) return prev
+
+              if (fetchMoreResult.users.length === 0) {
+                setFinished(true)
+              }
+
+              return Object.assign({}, prev, {
+                users: [...prev.users, ...fetchMoreResult.users],
+              })
+            },
+          })
+        }
+      })
+      if (node) observer.current.observe(node)
+    },
+    [loading, finished],
+  )
+
   const handleFilterChange = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value)
+    setFinished(false)
   }, 300)
 
   return (
@@ -78,15 +120,18 @@ export default function AccountUsers() {
           <div />
           <PermissionColumn>Permission</PermissionColumn>
         </ListHeader>
-        {data &&
-          data.users.map((user, i) => (
+        {users.map((user, i) => {
+          const isLastElement = i + 1 === users.length
+          return (
             <User
               key={i}
+              ref={isLastElement ? lastUserElementRef : null}
               user={user}
               selected={selectedIds[user.id] || false}
               onChangeSelected={selected => onChangeSelected(user.id, selected)}
             />
-          ))}
+          )
+        })}
       </ListContainer>
     </Root>
   )

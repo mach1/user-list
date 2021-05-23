@@ -7,17 +7,17 @@ import Checkbox from '../ui/form/Checkbox'
 import EditButton from '../ui/form/EditButton'
 import DeleteButton from '../ui/form/DeleteButton'
 import Role from './Role'
-import type { GetUsers_users as User } from '../operations/queries/__generated__/GetUsers'
+import type { GetUsers_users as UserType } from '../operations/queries/__generated__/GetUsers'
 
 interface Props {
   onChangeSelected: (selected: boolean) => void
   selected: boolean
-  user: User
+  user: UserType
 }
 
-export default function User({ user, selected, onChangeSelected }: Props) {
+function User({ user, selected, onChangeSelected }: Props, ref: React.ForwardedRef<HTMLDivElement>) {
   return (
-    <Root selected={selected}>
+    <Root ref={ref} selected={selected}>
       <ColorStripe />
       <Checkbox checked={selected} onChange={() => onChangeSelected(!selected)} />
       <div />
@@ -37,6 +37,8 @@ export default function User({ user, selected, onChangeSelected }: Props) {
     </Root>
   )
 }
+
+export default React.forwardRef(User)
 
 const Root = styled.div<{ selected: boolean }>`
   display: grid;

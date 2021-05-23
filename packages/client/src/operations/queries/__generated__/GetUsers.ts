@@ -24,4 +24,6 @@ export interface GetUsers {
 
 export interface GetUsersVariables {
   filter?: string | null;
+  offset?: number | null;
+  limit?: number | null;
 }

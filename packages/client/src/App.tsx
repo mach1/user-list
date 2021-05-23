@@ -2,14 +2,25 @@ import React from 'react'
 import { ThemeProvider } from '@emotion/react'
 import styled from '@emotion/styled'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+import { offsetLimitPagination } from '@apollo/client/utilities'
 
 import AccountUsers from './AccountUsers/AccountUsers'
 import Globals from './ui/Globals'
 import theme from './ui/theme'
 
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        users: offsetLimitPagination(['filter']),
+      },
+    },
+  },
+})
+
 const client = new ApolloClient({
   uri: 'http://localhost:4000',
-  cache: new InMemoryCache(),
+  cache,
 })
 
 function App() {
