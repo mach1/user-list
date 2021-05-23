@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_USERS = gql`
-  query GetUsers {
-    getUsers {
+  query GetUsers($filter: String) {
+    users(filter: $filter) {
       id
       name
       email

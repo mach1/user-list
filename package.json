@@ -8,7 +8,8 @@
     "dev-client": "yarn workspace @user-list/client dev",
     "dev-server": "yarn workspace @user-list/server dev",
     "dev": "concurrently --prefix \"[{name}]\" --names \"SERVER,CLIENT\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev-server\" \"npm run dev-client\"",
-    "gen-client-types": "yarn workspace @user-list/client gen-types"
+    "gen-client-types": "yarn workspace @user-list/client gen-types",
+    "gen-server-types": "yarn workspace @user-list/server gen-types"
   },
   "private": true,
   "workspaces": {

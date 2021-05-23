@@ -5,9 +5,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "tsc-watch --noClear -b --onSuccess \"node --enable-source-maps index.js\""
+    "dev": "tsc-watch --noClear -b --onSuccess \"node --enable-source-maps index.js\"",
+    "gen-types": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
+    "@graphql-codegen/add": "^2.0.2",
+    "@graphql-codegen/cli": "^1.21.4",
+    "@graphql-codegen/typescript": "^1.22.0",
+    "@graphql-codegen/typescript-resolvers": "^1.19.1",
     "apollo-server": "^2.24.1",
     "graphql": "^15.5.0",
     "ts-node": "^9.1.1",

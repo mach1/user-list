@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { useQuery } from '@apollo/client'
 
 import { GET_USERS } from '../operations/queries/getUsers'
-import type { GetUsers } from '../operations/queries/__generated__/GetUsers'
+import type { GetUsers, GetUsersVariables, GetUsers_users } from '../operations/queries/__generated__/GetUsers'
 
 import { SectionTitle, PrimaryButton, ListTitle, ColumnTitle } from '../ui/components'
 import SearchInput from '../ui/form/SearchInput'
@@ -15,9 +15,9 @@ import User from './User'
 
 export default function AccountUsers() {
   const [selectedIds, setSelectedIds] = React.useState<{ [key: string]: boolean }>({})
-  const { data } = useQuery<GetUsers>(GET_USERS)
+  const { data } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, { variables: { filter: '' } })
 
-  const onChangeSelected = (id: string, selected: boolean) => {
+  const onChangeSelected = (id: GetUsers_users['id'], selected: boolean) => {
     if (!selected) {
       const copy = { ...selectedIds }
       delete copy[id]
@@ -35,8 +35,8 @@ export default function AccountUsers() {
   const onToggleSelectAll = () => {
     if (!data) return
 
-    if (selectedCount < data?.getUsers.length) {
-      const allSelectedIds = data.getUsers.reduce<{ [key: string]: boolean }>((acc, user) => {
+    if (selectedCount < data?.users.length) {
+      const allSelectedIds = data.users.reduce<{ [key: string]: boolean }>((acc, user) => {
         acc[user.id] = true
         return acc
       }, {})
@@ -72,7 +72,7 @@ export default function AccountUsers() {
           <div />
           <PermissionColumn>Permission</PermissionColumn>
         </ListHeader>
-        {data.getUsers.map((user, i) => (
+        {data.users.map((user, i) => (
           <User
             key={i}
             user={user}

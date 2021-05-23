@@ -1,34 +1,21 @@
-import { ApolloServer, gql } from 'apollo-server'
-import userData from './data/users.json'
+import { ApolloServer } from 'apollo-server'
 
-const typeDefs = gql`
-  enum Role {
-    ACCOUNT_MANAGER
-    ADMIN
-    AGENT
-    EXTERNAL_REVIEWER
-  }
+import { typeDefs, resolvers } from './resolver'
+import { UsersProvider } from './provider'
 
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-    avatar: String!
-    role: Role!
-  }
-
-  type Query {
-    getUsers: [User!]!
-  }
-`
-
-const resolvers = {
-  Query: {
-    getUsers: () => userData.users.slice(0, 50)
-  }
+export interface Context {
+  dataSources: {
+    usersProvider: UsersProvider
+  };
 }
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const dataSources = (): Context['dataSources'] => {
+  return {
+    usersProvider: new UsersProvider()
+  };
+};
+
+const server = new ApolloServer({ typeDefs, resolvers, dataSources })
 
 server.listen().then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`)

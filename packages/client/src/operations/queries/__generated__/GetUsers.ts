@@ -9,9 +9,9 @@ import { Role } from "./globalTypes";
 // GraphQL query operation: GetUsers
 // ====================================================
 
-export interface GetUsers_getUsers {
+export interface GetUsers_users {
   __typename: "User";
-  id: string;
+  id: number;
   name: string;
   email: string;
   avatar: string;
@@ -19,5 +19,9 @@ export interface GetUsers_getUsers {
 }
 
 export interface GetUsers {
-  getUsers: GetUsers_getUsers[];
+  users: GetUsers_users[];
+}
+
+export interface GetUsersVariables {
+  filter?: string | null;
 }
