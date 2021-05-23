@@ -12,7 +12,7 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        users: offsetLimitPagination(['filter']),
+        users: offsetLimitPagination(['filter', 'sortedBy', 'sortOrder']),
       },
     },
   },

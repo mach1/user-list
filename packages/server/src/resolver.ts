@@ -18,7 +18,7 @@ export const typeDefs = gql`
   }
 
   type Query {
-    users(offset: Int, limit: Int, filter: String): [User!]!
+    users(offset: Int, limit: Int, filter: String, sortedBy: String, sortOrder: String): [User!]!
   }
 `
 export const resolvers: Resolvers = {

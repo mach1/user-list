@@ -11,21 +11,25 @@ import type {
   GetUsers_users as UserType,
 } from '../operations/queries/__generated__/GetUsers'
 
-import { SectionTitle, PrimaryButton, ListTitle, ColumnTitle } from '../ui/components'
+import { SectionTitle, PrimaryButton, ListTitle } from '../ui/components'
 import SearchInput from '../ui/form/SearchInput'
 import Checkbox from '../ui/form/Checkbox'
 import EditButton from '../ui/form/EditButton'
 import DeleteButton from '../ui/form/DeleteButton'
 import User from './User'
+import SortedColumnTitle, { SortOrder } from '../ui/SortedColumnTitle'
 
 const PAGE_SIZE = 50
 
 export default function AccountUsers() {
   const [filter, setFilter] = React.useState('')
+  const [sortedBy, setSortedBy] = React.useState('role')
+  const [sortOrder, setSortOrder] = React.useState<SortOrder>('desc')
   const [finished, setFinished] = React.useState(false)
   const [selectedIds, setSelectedIds] = React.useState<{ [key: string]: boolean }>({})
+
   const { data, loading, fetchMore } = useQuery<GetUsers, GetUsersVariables>(GET_USERS, {
-    variables: { filter, offset: 0, limit: PAGE_SIZE },
+    variables: { filter, offset: 0, limit: PAGE_SIZE, sortedBy, sortOrder },
     notifyOnNetworkStatusChange: true,
   })
   const [allSelected, setAllSelected] = React.useState(false)
@@ -71,7 +75,7 @@ export default function AccountUsers() {
       observer.current = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && !finished) {
           fetchMore({
-            variables: { filter, offset: users.length, limit: PAGE_SIZE },
+            variables: { filter, sortedBy, sortOrder, offset: users.length, limit: PAGE_SIZE },
             updateQuery: (prev, { fetchMoreResult }) => {
               if (!fetchMoreResult) return prev
 
@@ -96,6 +100,11 @@ export default function AccountUsers() {
     setFinished(false)
   }, 300)
 
+  const handleSortChange = (field: string, sortOrder: SortOrder) => {
+    setSortedBy(field)
+    setSortOrder(sortOrder)
+  }
+
   return (
     <Root>
       <Header>
@@ -116,9 +125,13 @@ export default function AccountUsers() {
         <ListHeader>
           <Checkbox checked={allSelected} onChange={onToggleSelectAll} />
           <div />
-          <UserColumn>User</UserColumn>
+          <UserColumn name='name' sortOrder={sortOrder} sortedBy={sortedBy} onSortChange={handleSortChange}>
+            User
+          </UserColumn>
           <div />
-          <PermissionColumn>Permission</PermissionColumn>
+          <PermissionColumn name='role' sortOrder={sortOrder} sortedBy={sortedBy} onSortChange={handleSortChange}>
+            Permission
+          </PermissionColumn>
         </ListHeader>
         {users.map((user, i) => {
           const isLastElement = i + 1 === users.length
@@ -190,10 +203,10 @@ const ListHeader = styled.div`
   `}
 `
 
-const UserColumn = styled(ColumnTitle)`
+const UserColumn = styled(SortedColumnTitle)`
   grid-column: 3 / span 3;
 `
 
-const PermissionColumn = styled(ColumnTitle)`
+const PermissionColumn = styled(SortedColumnTitle)`
   grid-column: 7 / span 3;
 `

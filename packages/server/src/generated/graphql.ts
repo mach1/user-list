@@ -24,6 +24,8 @@ export type QueryUsersArgs = {
   offset?: Maybe<Scalars['Int']>;
   limit?: Maybe<Scalars['Int']>;
   filter?: Maybe<Scalars['String']>;
+  sortedBy?: Maybe<Scalars['String']>;
+  sortOrder?: Maybe<Scalars['String']>;
 };
 
 export enum Role {

@@ -19,6 +19,9 @@ export const ColumnTitle = styled.span`
   color: ${({ theme }) => theme.colors.gray60};
   font-size: ${({ theme }) => theme.fontSize.sm}px;
   line-height: 150%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 `
 
 export const Input = styled.input`
